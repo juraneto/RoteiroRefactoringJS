@@ -1,6 +1,9 @@
 const { readFileSync } = require('fs');
 
 function gerarFaturaStr (fatura, pecas) {
+  function getPeca(apresentacao) {
+    return pecas[apresentacao.id];
+  }
     let totalFatura = 0;
     let creditos = 0;
     let faturaStr = `Fatura ${fatura.cliente}\n`;
@@ -9,10 +12,10 @@ function gerarFaturaStr (fatura, pecas) {
                             minimumFractionDigits: 2 }).format;
   
     for (let apre of fatura.apresentacoes) {
-      const peca = pecas[apre.id];
+      const peca = getPeca(apre);
       let total = 0;
   
-      function calcularCustoTotal(peca, apre) {
+      function calcularTotalApresentacao(peca, apre) {
         let total = 0;
       
         switch (peca.tipo) {
@@ -35,7 +38,7 @@ function gerarFaturaStr (fatura, pecas) {
       
         return total;
       }
-  
+        
       // créditos para próximas contratações
       creditos += Math.max(apre.audiencia - 30, 0);
       if (peca.tipo === "comedia") 
